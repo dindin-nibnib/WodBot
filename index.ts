@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { Client } from "discordx";
 import { Intents, Message } from "discord.js";
 import { randomInt } from "crypto";
-const { clientId, guildId, token } = require('./config.json');
+const { clientId, guildId, token } = require("./config.json");
 
 // Create a new client instance
 const client = new Client({
@@ -32,4 +32,4 @@ client.on("messageCreate", (message) => {
     }
 });
 
-client.login("OTg1MTcxMTA5NDkyMTY2NjY2.GZBc_3.hbsj4FngTZiTK6XaqdLc67Lrv0dyDeTpV0CFCc");
+client.login(token);

@@ -3,8 +3,9 @@
     "enable": true
   },
   "compilerOptions": {
-    "module": "commonjs",
-    "target": "ES2021",
+    "baseUrl": "./",
+    "module": "CommonJS",
+    "target": "ES2022",
     "noImplicitAny": true,
     "sourceMap": true,
     "strict": true,
