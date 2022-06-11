@@ -108,3 +108,6 @@ build
 
 # package-lock file (local file specifying all downloaded modules)
 package-lock.json
+
+# vscode
+.vscode
