@@ -5,6 +5,22 @@ import { randomInt } from "crypto";
 import { APIInteractionDataResolvedGuildMember, Snowflake } from "discord-api-types/v9";
 const { clientId, guildId, token, dungeonRole } = require("./config.json");
 
+/**
+ * Gives an hour / date string to locate an action in time
+ * @returns {String} The date and hour, to use in the console, for example.
+ */
+function dateNow(): String {
+    let currentDate = new Date();
+    let cDay = currentDate.getDate()
+    let cMonth = currentDate.getMonth() + 1
+    let cYear = currentDate.getFullYear()
+    let cHour = currentDate.getHours()
+    let cMinutes = currentDate.getMinutes()
+    let cSeconds = currentDate.getSeconds()
+    let cMilisecs = currentDate.getMilliseconds()
+    return `[${cMonth}-${cDay}-${cYear} ${cHour}:${cMinutes} ${cSeconds}.${cMilisecs}]`;
+}
+
 // Create a new client instance
 const client = new Client({
     intents: [
@@ -31,8 +47,14 @@ client.on("interactionCreate", interaction => {
 
     switch (interaction.commandName) {
         case "dungeon":
-            if (minion === null)
+            if (minion === null) {
+                interaction.reply({
+                    content: "Not a valid minion!",
+                    ephemeral: true
+                });
                 return;
+            }
+
             if (minion.roles.cache.has(dungeonRole)) {
                 interaction.reply({
                     content: minion.displayName + " already is in the dungeon, use /undungeon <member> to get them out!",
@@ -56,8 +78,13 @@ client.on("interactionCreate", interaction => {
             break;
 
         case "undungeon":
-            if (minion === null)
+            if (minion === null) {
+                interaction.reply({
+                    content: "Not a valid minion!",
+                    ephemeral: true
+                });
                 return;
+            }
 
             if (!minion.roles.cache.has(dungeonRole)) {
                 interaction.reply({
@@ -82,6 +109,7 @@ client.on("interactionCreate", interaction => {
             break;
 
         default:
+            console.error(dateNow() + "Not a valid command!")
             break;
     }
 })
