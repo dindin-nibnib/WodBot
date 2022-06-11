@@ -30,7 +30,6 @@ client.on("messageCreate", (message) => {
             }
         }
     }
-
 });
 
 client.login("OTg1MTcxMTA5NDkyMTY2NjY2.GZBc_3.hbsj4FngTZiTK6XaqdLc67Lrv0dyDeTpV0CFCc");
