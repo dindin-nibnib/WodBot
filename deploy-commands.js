@@ -1,26 +1,18 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
+const fs = require('node:fs');
+const path = require('node:path');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId, token } = require('./config.json');
 
-const commands = [
-    new SlashCommandBuilder()
-    .setName("dungeon")
-    .setDescription("Sends someone to the dungeon")
-    .addUserOption(option =>
-        option.setName("minion")
-        .setDescription("The minion to send to the dungeon")
-        .setRequired(true)),
+const commands = [];
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
-    new SlashCommandBuilder()
-    .setName("undungeon")
-    .setDescription("Gets someone out of the dungeon")
-    .addUserOption(option =>
-        option.setName("minion")
-        .setDescription("The minion to get out of the dungeon")
-        .setRequired(true))
-]
-.map(command => command.toJSON());
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	commands.push(command.data.toJSON());
+}
     
 const rest = new REST({ version: '9' }).setToken(token);
 

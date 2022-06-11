@@ -1,9 +1,14 @@
+import fs = require('node:fs');
+import path = require('node:path');
+
+import { SlashCommandBuilder } from '@discordjs/builders';
 import "reflect-metadata";
-import { Client } from "discordx";
 import { GuildMember, Intents, Message } from "discord.js";
+import Discord = require("discord.js");
+import Discordx = require("discordx");
 import { randomInt } from "crypto";
 import { APIInteractionDataResolvedGuildMember, Snowflake } from "discord-api-types/v9";
-const { clientId, guildId, token, dungeonRole } = require("./config.json");
+const { token } = require("./config.json");
 
 /**
  * Gives an hour / date string to locate an action in time
@@ -21,6 +26,15 @@ function dateNow(): String {
     return `[${cMonth}-${cDay}-${cYear} ${cHour}:${cMinutes} ${cSeconds}.${cMilisecs}]`;
 }
 
+// Redeclares Client in order to add a collection of commands
+// Seems complicated but it's just long type names so that intellisense understands it
+class Client extends Discordx.Client {
+    commands = new Discord.Collection<string, {
+        data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+        execute(interaction: Discord.CommandInteraction<Discord.CacheType>, client: Client): Promise<void>;
+    }>();
+}
+
 // Create a new client instance
 const client = new Client({
     intents: [
@@ -30,89 +44,35 @@ const client = new Client({
     ]
 });
 
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    // Set a new item in the Collection
+    // With the key as the command name and the value as the exported module
+    client.commands.set(command.data.name, command);
+}
+
 client.once("ready", () => {
     console.log("Ready!")
 });
 
-client.on("interactionCreate", interaction => {
-    if (!interaction.isCommand())
-        return;
+client.on('interactionCreate', async interaction => {
+    if (!interaction.isCommand()) return;
 
-    let minionSnowflake = interaction.options.get("minion")?.value;
-    if (minionSnowflake === undefined)
-        return;
+    const command = client.commands.get(interaction.commandName);
 
-    let minion = client.guilds.resolve(guildId).members.resolve(minionSnowflake.toString())
+    if (!command) return;
 
-
-    switch (interaction.commandName) {
-        case "dungeon":
-            if (minion === null) {
-                interaction.reply({
-                    content: "Not a valid minion!",
-                    ephemeral: true
-                });
-                return;
-            }
-
-            if (minion.roles.cache.has(dungeonRole)) {
-                interaction.reply({
-                    content: minion.displayName + " already is in the dungeon, use /undungeon <member> to get them out!",
-                    ephemeral: true
-                });
-            } else {
-                minion.roles.add(dungeonRole).then((minion) => {
-                    interaction.reply({
-                        content: "Sent " + minion.displayName + " to the dungeon! (bad minion!)",
-                        ephemeral: true
-                    });
-                })
-                    .catch((err) => {
-                        interaction.reply({
-                            content: "Couldn't get " + minion?.displayName + " to the dungeon, they really wanted to stay in it... \n\n" + err,
-                            ephemeral: true
-                        });
-                    });
-
-            }
-            break;
-
-        case "undungeon":
-            if (minion === null) {
-                interaction.reply({
-                    content: "Not a valid minion!",
-                    ephemeral: true
-                });
-                return;
-            }
-
-            if (!minion.roles.cache.has(dungeonRole)) {
-                interaction.reply({
-                    content: minion.displayName + " Isn't in the dungeon, use /dungeon to send them in it!",
-                    ephemeral: true
-                });
-            } else {
-                minion.roles.remove(dungeonRole).then((minion) => {
-                    interaction.reply({
-                        content: "Got " + minion.displayName + " out of the dungeon! (bad minion!)",
-                        ephemeral: true
-                    });
-                })
-                    .catch((err) => {
-                        interaction.reply({
-                            content: "Couldn't get " + minion?.displayName + " out of the dungeon, they were too strong... \n\n" + err,
-                            ephemeral: true
-                        });
-                    });
-
-            }
-            break;
-
-        default:
-            console.error(dateNow() + "Not a valid command!")
-            break;
+    try {
+        await command.execute(interaction, client);
+    } catch (error) {
+        console.error(error);
+        await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
-})
+});
 
 client.on("messageCreate", (message) => {
     // To avoid bot loop (bot answering to itself)
