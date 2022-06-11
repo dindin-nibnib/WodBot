@@ -3,11 +3,10 @@ import path = require('node:path');
 
 import { SlashCommandBuilder } from '@discordjs/builders';
 import "reflect-metadata";
-import { GuildMember, Intents, Message } from "discord.js";
+import { Intents } from "discord.js";
 import Discord = require("discord.js");
 import Discordx = require("discordx");
 import { randomInt } from "crypto";
-import { APIInteractionDataResolvedGuildMember, Snowflake } from "discord-api-types/v9";
 const { token } = require("./config.json");
 
 /**
