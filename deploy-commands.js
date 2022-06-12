@@ -5,13 +5,19 @@ const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId } = require('./config.json');
 const dotenv = require('dotenv');
 
+console.log("Launched!");
+
 dotenv.config();
 
 const token = process.env.TOKEN;
 
+console.log("Imported dotenv");
+
 if (token === undefined) {
     process.exit(-1);
 }
+
+console.log("Valid token");
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
