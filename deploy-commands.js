@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
-const { clientId, guildId } = require('./config.json');
+var { clientId, guildId } = require('./config.json');
 const dotenv = require('dotenv');
 
 console.log("Launched!");
@@ -10,6 +10,13 @@ console.log("Launched!");
 dotenv.config();
 
 const token = process.env.TOKEN;
+if (process.env.clientId !== undefined) {
+	clientId = process.env.clientId;
+}
+
+if (process.env.guildId !== undefined) {
+	clientId = process.env.guildId;
+}
 
 console.log("Imported dotenv");
 
