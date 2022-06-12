@@ -7,7 +7,15 @@ import { Intents } from "discord.js";
 import Discord = require("discord.js");
 import Discordx = require("discordx");
 import { randomInt } from "crypto";
-const { token } = require("./config.json");
+import dotenv = require('dotenv');
+
+dotenv.config();
+
+const token = process.env.TOKEN;
+
+if (token === undefined) {
+    process.exit(-1);
+}
 
 /**
  * Gives an hour / date string to locate an action in time
