@@ -28,4 +28,5 @@ jobs:
         TOKEN: ${{ secrets.TOKEN }}
     - run: npm install
     - run: npm ci
+    - run: ls
     - run: node deploy-commands.js
