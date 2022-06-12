@@ -16,7 +16,8 @@ module.exports = {
     .addUserOption(option =>
         option.setName("minion")
         .setDescription("The minion to send to the dungeon")
-        .setRequired(true)),
+        .setRequired(true))
+    .setDefaultMemberPermissions("MODERATE_MEMBERS"),
 
     /**
      * 
