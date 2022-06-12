@@ -8,6 +8,7 @@ import Discord = require("discord.js");
 import Discordx = require("discordx");
 import { randomInt } from "crypto";
 import dotenv = require('dotenv');
+const { voreChannelId } = require("./config.json");
 
 dotenv.config();
 
@@ -86,11 +87,9 @@ client.on("messageCreate", (message) => {
     if (message.author.bot)
         return;
 
-    if (message.channel.type == "GUILD_TEXT") {
-        if (message.channel.nsfw) {
-            if (randomInt(0, 2) == 0) {
-                message.reply("You've been eaten.");
-            }
+    if (message.channel.id === voreChannelId) {
+        if (randomInt(0, 2) == 0) {
+            message.reply("You've been eaten.");
         }
     }
 });
