@@ -114,3 +114,6 @@ package-lock.json
 
 # token (KEEP IT PRIVATE)
 .env
+
+# client config
+client.json
