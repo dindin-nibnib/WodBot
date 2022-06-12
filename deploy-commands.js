@@ -5,9 +5,10 @@ const { Routes } = require('discord-api-types/v9');
 const { clientId, guildId } = require('./config.json');
 const dotenv = require('dotenv');
 
+
 console.log("Launched!");
 
-dotenv.config();
+//dotenv.config();
 
 const token = process.env.TOKEN;
 
