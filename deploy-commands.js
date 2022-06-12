@@ -10,6 +10,7 @@ dotenv.config();
 const token = process.env.TOKEN;
 
 if (token === undefined) {
+    console.error("Invalid token: " + token);
     process.exit(-1);
 }
 
