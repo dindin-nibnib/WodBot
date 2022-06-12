@@ -111,3 +111,6 @@ package-lock.json
 
 # vscode
 .vscode
+
+# token (KEEP IT PRIVATE)
+.env
