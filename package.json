@@ -4,8 +4,7 @@
   "description": "A discord bot for the World of dragons podcast server",
   "main": "index.ts",
   "scripts": {
-    "start": "npx ts-node index.ts",
-    "prestart": "node deploy-commands.js"
+    "start": "npx ts-node index.ts"
   },
   "repository": {
     "type": "git",
