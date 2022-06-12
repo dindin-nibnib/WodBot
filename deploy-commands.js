@@ -14,6 +14,7 @@ const token = process.env.TOKEN;
 console.log("Imported dotenv");
 
 if (token === undefined) {
+    console.error("Invalid token: " + token);
     process.exit(-1);
 }
 
