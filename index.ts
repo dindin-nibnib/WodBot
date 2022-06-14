@@ -63,7 +63,7 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-client.once("ready", () => {
+client.once("ready", async () => {
     console.log("Ready!")
 });
 
@@ -82,7 +82,7 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async message => {
     // To avoid bot loop (bot answering to itself)
     if (message.author.bot)
         return;
