@@ -4,13 +4,13 @@ const Discord = require("discord.js");
 const Discordx = require("discordx");
 
 // Redeclares Client in order to add a collection of commands
-// Seems complicated but it's just long type names so that intellisense understands it
 class Client extends Discordx.Client {
     commands = new Discord.Collection();
 }
 
 module.exports = {
-	data: new SlashCommandBuilder()
+	/* It's creating a new slash command. */
+    data: new SlashCommandBuilder()
     .setName("undungeon")
     .setDescription("Gets someone out of the dungeon")
     .addUserOption(option =>
@@ -20,20 +20,27 @@ module.exports = {
     .setDefaultMemberPermissions(1099511627776),
 
     /**
-     * 
+     * It's a function that is called when the command is executed.
      * @param {Discord.CommandInteraction<Discord.CacheType>} interaction 
      * @param {Client} client
      * @returns nuthin
      */
-	async execute(interaction, client) {
+    async execute(interaction, client) {
 		// Gets the snowflake of the user
         let minionSnowflake = interaction.options.get("minion")?.value;
+
+        /* It's checking if the snowflake is undefined, if it is, it logs it to the console and
+        returns. */
         if (minionSnowflake === undefined) {
             console.error(dateNow() + "undefined snowflake");
             return;
         }
 
+        /* It's getting the member object from the snowflake. */
         let minion = client.guilds.resolve(guildId).members.resolve(minionSnowflake.toString())
+
+        /* It's checking if the member object is null, if it is, it sends a message to the user and
+        returns. */
         if (minion === null) {
             interaction.reply({
                 content: "Not a valid minion!",
@@ -42,6 +49,8 @@ module.exports = {
             return;
         }
 
+        /* It's checking if the member has the dungeon role, if they do, it removes it, if they don't,
+        it sends a message saying they aren't in the dungeon. */
         if (!minion.roles.cache.has(dungeonRole)) {
             interaction.reply({
                 content: minion.displayName + " Isn't in the dungeon, use /dungeon to send them in it!",
@@ -60,7 +69,6 @@ module.exports = {
                         ephemeral: true
                     });
                 });
-
         }
 	},
 };
